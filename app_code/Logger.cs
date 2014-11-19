@@ -17,7 +17,7 @@ public sealed class Logger
     {
         this.logFile = logFile;
         this.date = date;
-        this.file = TextWriter.Synchronized(File.AppendText(logFile + "gaLogFile" + date.Year + date.Month + date.Day + ".log"));
+        this.file = TextWriter.Synchronized(File.AppendText(logFile + "gaLogFile" + date.Year + date.Month + date.Day + "_" + date.Hour + date.Minute + date.Second + ".log"));
     }
 
     public static Logger Instance(String logFile, DateTime date)
@@ -60,7 +60,7 @@ public sealed class Logger
                 this.date = System.DateTime.Now;
                 this.file.Flush();
                 this.file.Close();
-                this.file = TextWriter.Synchronized(File.AppendText(logFile + "gaLogFile" + date.Year + date.Month + date.Day + ".log"));
+                this.file = TextWriter.Synchronized(File.AppendText(logFile + "gaLogFile" + date.Year + date.Month + date.Day + "_" + date.Hour + date.Minute + date.Second + ".log"));
             }
         }
     }

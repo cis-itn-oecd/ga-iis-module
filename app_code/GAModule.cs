@@ -99,8 +99,6 @@ public class GAModule : IHttpModule {
     // events by adding your handlers.
     public void Init(HttpApplication application)
     {
-        //Debug.WriteLine("Init ");
-        //application.BeginRequest += (new EventHandler(this.Application_BeginRequest));
         application.EndRequest -=
             (new EventHandler(this.Application_EndRequest));
         application.EndRequest +=
@@ -111,32 +109,20 @@ public class GAModule : IHttpModule {
 
         HttpApplicationState theApp = application.Application;
 
-        //if (theApp.Get("gaRequestQueue") != null)
-        //    this.gaRequestQueue = (Queue)theApp.Get("gaRequestQueue");
-
-        /*if (this.gaRequestQueue == null)
-        {
-            //this.gaRequestQueue = new Queue<GARequestObject>();
-            this.gaRequestQueue = new Queue();
-            theApp.Add("gaRequestQueue", this.gaRequestQueue);
-        }*/
         this.gaRequestQueue = GaQueue.Instance();
 
 
         Object lGaThread = theApp.Get("gaThread");
-        //logger.writeToFile("lGaThread :" + lGaThread);
         if (lGaThread == null)
         {
             logger.writeToFile("lGaThread is null");
             //THREAD_NUMBER
             for (int i = 1; i <= this.THREAD_NUMBER; i++)
             {
-                String theTime = System.DateTime.Now.ToUniversalTime().Hour + "_" + System.DateTime.Now.ToUniversalTime().Minute + "_" + System.DateTime.Now.ToUniversalTime().Second;
-                //GoogleAnalyticThread gaThread = new GoogleAnalyticThread(theTime + "_" + i, this.gaRequestQueue, OECD_PROXY, SEND_TO_GA, LOG_TO_FILE, LOG_FILE_DIR);
+                String theTime = System.DateTime.Now.Hour + "_" + System.DateTime.Now.Minute + "_" + System.DateTime.Now.Second;
                 GoogleAnalyticThread gaThread = new GoogleAnalyticThread(theTime + "_" + i, OECD_PROXY, SEND_TO_GA, LOG_TO_FILE, LOG_FILE_DIR);
                 Thread oThread = new Thread(new ThreadStart(gaThread.ThreadRun));
                 oThread.Start();
-                //Debug.WriteLine("starting thread(" + theTime + ") ...");
             }
             theApp.Add("gaThread", this.THREAD_NUMBER);
         }
@@ -149,14 +135,12 @@ public class GAModule : IHttpModule {
                 logger.writeToFile("count : " + count);
                 for (int i = 1; i <= count; i++)
                 {
-                    String theTime = System.DateTime.Now.ToUniversalTime().Hour + "_" + System.DateTime.Now.ToUniversalTime().Minute + "_" + System.DateTime.Now.ToUniversalTime().Second;
+                    String theTime = System.DateTime.Now.Hour + "_" + System.DateTime.Now.Minute + "_" + System.DateTime.Now.Second;
                     int lCount = i + this.THREAD_NUMBER;
                     logger.writeToFile("lCount : " + lCount);
-                    //GoogleAnalyticThread gaThread = new GoogleAnalyticThread(theTime + "_" + lCount, this.gaRequestQueue, OECD_PROXY, SEND_TO_GA, LOG_TO_FILE, LOG_FILE_DIR);
                     GoogleAnalyticThread gaThread = new GoogleAnalyticThread(theTime + "_" + lCount, OECD_PROXY, SEND_TO_GA, LOG_TO_FILE, LOG_FILE_DIR);
                     Thread oThread = new Thread(new ThreadStart(gaThread.ThreadRun));
                     oThread.Start();
-                    //Debug.WriteLine("starting thread(" + theTime + ") ...");
                 }                
                 this.THREAD_NUMBER = threadNumber;
             }
@@ -164,18 +148,6 @@ public class GAModule : IHttpModule {
         }
         logger.writeToFile("Finishing Init : " + Thread.CurrentThread.ManagedThreadId);
     }
-
-/*    private void Application_BeginRequest(Object source, EventArgs e)
-    {
-        // Create HttpApplication and HttpContext objects to access
-        // request and response properties.
-        /*HttpApplication application = (HttpApplication)source;
-        
-        HttpContext context = application.Context;
-        string filePath = context.Request.FilePath;
-        string fileExtension = VirtualPathUtility.GetExtension(filePath);* /
-    }*/
-
 
     private void Application_EndRequest(Object source, EventArgs e) {
         try
@@ -241,14 +213,7 @@ public class GAModule : IHttpModule {
                 {
                     return;
                 }
-                //if (this.filtredBots.co lUserAgent)
-                /*if (lUserAgent.Contains("GOOGLEBOT") || lUserAgent.Contains("YANDEXBOT") || lUserAgent.Contains("BINGBOT")
-                    || lUserAgent.Contains("BAIDUSPIDER") || lUserAgent.Contains("TWITTERBOT") || lUserAgent.Contains("YOUDAOBOT")
-                        || lUserAgent.Contains("YOLINKBOT") || lUserAgent.Contains("PAPERLIBOT") || lUserAgent.Contains("VOILABOT")
-                            || lUserAgent.Contains("SHOWYOUBOT") || lUserAgent.Contains("EXABOT") || lUserAgent.Contains("MAIL.RU_BOT"))
-                {
-                    return;
-                }*/
+                
             }
 
             Uri uri = context.Request.UrlReferrer;
@@ -272,15 +237,6 @@ public class GAModule : IHttpModule {
 
             if (gaRequestObject != null)
             {
-                //Debug.WriteLine("filePath : " + filePath);   
-
-                //Queue.Synchronized(this.gaRequestQueue);
-                //Queue mySyncdQ = Queue.Synchronized(this.gaRequestQueue);
-
-                /*lock (this.gaRequestQueue.SyncRoot)
-                {
-                    this.gaRequestQueue.Enqueue(gaRequestObject);
-                }*/
                 this.gaRequestQueue.Enqueue(gaRequestObject);
             }
         }

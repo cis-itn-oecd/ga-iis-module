@@ -9,14 +9,10 @@ public sealed class GaQueue
     static GaQueue instance = null;
     static readonly object padlock = new Object();
     private Queue gaRequestQueue;
-    //ArrayList uniqueFileList = null;
-    //ArrayList toBeRemoveFileList = null;
 
     GaQueue()
     {
         this.gaRequestQueue = new Queue();
-        //this.uniqueFileList = new ArrayList();
-        //this.toBeRemoveFileList = new ArrayList();        
     }
 
     public static GaQueue Instance()
@@ -42,12 +38,6 @@ public sealed class GaQueue
         {
             lock (padlock)
             {
-                /*String key = requestObject.requestTime.ToShortDateString() + "_" + requestObject.requestTime.ToLongTimeString() + "_" + requestObject.ipAddress + "_" + requestObject.el;
-                if (!this.uniqueFileList.Contains(key))
-                {
-                    this.gaRequestQueue.Enqueue(requestObject);
-                    this.uniqueFileList.Add(key);
-                }*/
                 this.gaRequestQueue.Enqueue(requestObject);
             }
         }
@@ -63,16 +53,6 @@ public sealed class GaQueue
                 {
                     requestObject = (GARequestObject)this.gaRequestQueue.Dequeue();
                     requestObject.requestCount = this.gaRequestQueue.Count;
-                    /*String key = requestObject.requestTime.ToShortDateString() + "_" + requestObject.requestTime.ToLongTimeString() + "_" + requestObject.ipAddress + "_" + requestObject.el;
-                    this.toBeRemoveFileList.Add(key);
-                    if (toBeRemoveFileList.Count > 20)
-                    {
-                        foreach (String lKey in this.toBeRemoveFileList)
-                        {
-                            this.uniqueFileList.Remove(lKey);
-                        }
-                        this.toBeRemoveFileList.Clear();
-                    }*/
                 }
             }
         }
